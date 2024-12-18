@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Card Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .game-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .deck, .players-hand {
+      display: flex;
+      margin: 20px 0;
+    }
+
+    .card {
+      width: 80px;
+      height: 120px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .card.back {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .story {
+      margin: 20px;
+      padding: 20px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background-color: #fff;
+      width: 80%;
+      min-height: 100px;
+    }
+
+    .end-game {
+      margin-top: 20px;
+      font-size: 18px;
+      color: red;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>Story Card Game</h1>
+<div class="game-board">
+  <div class="story">
+    <p id="story">Once upon a time...</p>
+  </div>
+
+  <div class="deck">
+    <div class="card back" id="draw-card">Draw</div>
+  </div>
+
+  <div class="players-hand" id="player-hand">
+    <!-- Player cards will appear here -->
+  </div>
+
+  <div class="end-game" id="end-game">End Game</div>
+</div>
+
+<script>
+  const deck = [
+    'The knight rode into the forest.',
+    'A dragon appeared in the sky.',
+    'The princess was trapped in a tower.',
+    'A magical sword glowed with power.',
+    'An old wizard appeared with a warning.',
+    'The sky turned dark with storm clouds.',
+    'The village was under attack.',
+    'A hero emerged from the shadows.',
+    'The treasure was hidden deep underground.',
+    'An ancient prophecy was revealed.',
+    'The journey began at dawn.',
+    'A mysterious stranger joined the group.',
+    'The final battle loomed ahead.',
+    'The kingdom was saved at last.',
+    'A new adventure awaited on the horizon.',
+    'The hero made a difficult choice.',
+    'The villain was defeated.',
+    'Peace returned to the land.',
+    'An unexpected ally arrived.',
+    'The end of the story was near.'
+  ];
+
+  let playerHand = [];
+  const storyElement = document.getElementById('story');
+  const playerHandElement = document.getElementById('player-hand');
+  const drawCardElement = document.getElementById('draw-card');
+
+  function drawCard() {
+    if (deck.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * deck.length);
+    const card = deck.splice(randomIndex, 1)[0];
+    return card;
+  }
+
+  function renderHand() {
+    playerHandElement.innerHTML = '';
+    playerHand.forEach((card, index) => {
+      const cardElement = document.createElement('div');
+      cardElement.className = 'card';
+      cardElement.textContent = card;
+      cardElement.onclick = () => playCard(index);
+      playerHandElement.appendChild(cardElement);
+    });
+  }
+
+  function playCard(index) {
+    const card = playerHand.splice(index, 1)[0];
+    storyElement.textContent += ' ' + card;
+
+    const newCard = drawCard();
+    if (newCard) playerHand.push(newCard);
+    renderHand();
+  }
+
+  function initializeGame() {
+    for (let i = 0; i < 5; i++) {
+      const card = drawCard();
+      if (card) playerHand.push(card);
+    }
+    renderHand();
+  }
+
+  drawCardElement.onclick = () => {
+    if (playerHand.length < 5) {
+      const newCard = drawCard();
+      if (newCard) playerHand.push(newCard);
+      renderHand();
+    }
+  };
+
+  document.getElementById('end-game').onclick = () => {
+    alert('The game has ended! Thank you for playing!');
+    location.reload();
+  };
+
+  initializeGame();
+</script>
+</body>
+</html>
